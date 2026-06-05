@@ -65,7 +65,12 @@
 
 ### Metadata Schema
 
-| Trư
+| Trường (Field) | Kiểu dữ liệu | Ý nghĩa / Mô tả |
+|----------------|--------------|----------------|
+| `category` | `str` | Phân loại tài liệu (ví dụ: `security`, `terms`, `battery_rental`) |
+| `lang` | `str` | Ngôn ngữ của tài liệu (`vi` cho tiếng Việt) |
+| `source` | `str` | Nguồn lấy tài liệu (ví dụ: `vinfastauto.com`) |
+
 ## 3. Chunking Strategy — Cá nhân chọn, nhóm so sánh (15 điểm)
 
 ### Baseline Analysis
