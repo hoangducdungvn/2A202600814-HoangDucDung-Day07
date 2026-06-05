@@ -81,9 +81,7 @@ Chạy `ChunkingStrategyComparator().compare()` trên 3 tài liệu VinFast (chu
 |-----------|----------|-------------|------------|-------------------|
 | chinhsachbaomat.md (2,908 chars) | FixedSizeChunker (`fixed_size`) | 7 | 458 | ❌ Cắt giữa câu |
 | | SentenceChunker (`by_sentences`) | 8 | 362 | ⚠️ Giữ câu nhưng mất cấu trúc mục |
-| | RecursiveChunker (`recursive`) | 10 | 289 | ✅ Tách theo `
-
-` → giữ nguyên mục |
+| | RecursiveChunker (`recursive`) | 10 | 289 | ✅ Tách theo đoạn / dòng → giữ nguyên mục |
 | dieukhoandatcoc.md (5,099 chars) | FixedSizeChunker (`fixed_size`) | 12 | 471 | ❌ Cắt giữa điều khoản |
 | | SentenceChunker (`by_sentences`) | 12 | 421 | ⚠️ Giữ câu nhưng có thể cắt đoạn |
 | | RecursiveChunker (`recursive`) | 16 | 317 | ✅ Giữ nguyên trọn vẹn từng điều khoản |
