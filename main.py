@@ -18,14 +18,9 @@ from src.embeddings import (
 from src.models import Document
 from src.store import EmbeddingStore
 
-SAMPLE_FILES = [
-    "data/python_intro.txt",
-    "data/vector_store_notes.md",
-    "data/rag_system_design.md",
-    "data/customer_support_playbook.txt",
-    "data/chunking_experiment_report.md",
-    "data/vi_retrieval_notes.md",
-]
+import glob
+
+SAMPLE_FILES = glob.glob("data/*.md") + glob.glob("data/*.txt")
 
 
 def load_documents_from_files(file_paths: list[str]) -> list[Document]:
@@ -83,7 +78,7 @@ def run_manual_demo(question: str | None = None, sample_files: list[str] | None 
     for doc in docs:
         print(f"  - {doc.id}: {doc.metadata['source']}")
 
-    load_dotenv(override=False)
+    load_dotenv(override=True)
     provider = os.getenv(EMBEDDING_PROVIDER_ENV, "mock").strip().lower()
     if provider == "local":
         try:
@@ -100,10 +95,18 @@ def run_manual_demo(question: str | None = None, sample_files: list[str] | None 
 
     print(f"\nEmbedding backend: {getattr(embedder, '_backend_name', embedder.__class__.__name__)}")
 
-    store = EmbeddingStore(collection_name="manual_test_store", embedding_fn=embedder)
-    store.add_documents(docs)
+    from src.chunking import RecursiveChunker
+    chunker = RecursiveChunker(chunk_size=500)
+    chunked_docs = []
+    for doc in docs:
+        chunks = chunker.chunk(doc.content)
+        for i, chunk_text in enumerate(chunks):
+            chunked_docs.append(Document(id=f"{doc.id}_{i}", content=chunk_text, metadata=doc.metadata))
 
-    print(f"\nStored {store.get_collection_size()} documents in EmbeddingStore")
+    store = EmbeddingStore(collection_name="manual_test_store", embedding_fn=embedder)
+    store.add_documents(chunked_docs)
+
+    print(f"\nStored {store.get_collection_size()} chunks in EmbeddingStore")
     print("\n=== EmbeddingStore Search Test ===")
     print(f"Query: {query}")
     search_results = store.search(query, top_k=3)
